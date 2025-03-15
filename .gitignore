@@ -1,0 +1,41 @@
+# Build artifacts
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.swp
+*.userprefs
+
+# Rider / JetBrains files
+.idea/
+*.iml
+
+# OS-specific files
+Thumbs.db
+ehthumbs.db
+*.DS_Store
+
+# Logs
+*.log
+
+# Configuration / Secrets
+appsettings.Development.json
+Secrets.json
+
+# If you use EF migrations and want to keep them:
+# DO NOT ignore the Migrations/ folder; it should be committed so others can update the DB schema.
+# If you generate them automatically and never commit them, you could ignore Migrations/:
+# Migrations/
+
+# Optional: If you use Docker
+Dockerfile
+docker-compose.yml
+.env
+
+# If you have local test databases or backups
+*.mdf
+*.ldf
+*.bak
