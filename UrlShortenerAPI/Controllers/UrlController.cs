@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UrlShorternerAPI.Data;
-using UrlShorternerAPI.Models;
+using UrlShortenerAPI.Data;
+using UrlShortenerAPI.Models;
 
 namespace UrlShortenerAPI.Controllers
 
