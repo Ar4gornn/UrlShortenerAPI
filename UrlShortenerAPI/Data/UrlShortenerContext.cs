@@ -10,6 +10,11 @@ namespace UrlShortenerAPI.Data
         {
         }
 
-        public DbSet<UrlEntity> Urls => Set<UrlEntity>();
+        public DbSet<UrlEntity> Urls { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UrlEntity>().ToTable("urls");
+        }
     }
 }
