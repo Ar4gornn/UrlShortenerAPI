@@ -1,4 +1,4 @@
-namespace UrlShortenerAPI.Dtos
+namespace UrlShortenerAPI.Models
 {
     /// <summary>
     /// DTO representing the data needed to create a shortened URL.

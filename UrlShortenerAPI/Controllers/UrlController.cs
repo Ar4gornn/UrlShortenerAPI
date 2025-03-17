@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using UrlShortenerAPI.Dtos;
+using UrlShortenerAPI.Models;
 using UrlShortenerAPI.Services;
 
 namespace UrlShortenerAPI.Controllers

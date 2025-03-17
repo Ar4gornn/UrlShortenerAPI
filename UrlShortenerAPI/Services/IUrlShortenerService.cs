@@ -1,4 +1,3 @@
-using UrlShortenerAPI.Dtos;
 using UrlShortenerAPI.Models;
 
 namespace UrlShortenerAPI.Services

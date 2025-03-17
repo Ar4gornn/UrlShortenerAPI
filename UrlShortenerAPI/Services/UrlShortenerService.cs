@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using UrlShortenerAPI.Data;
-using UrlShortenerAPI.Dtos;
 using UrlShortenerAPI.Models;
 using UrlShortenerAPI.Utility.Constants;
 
@@ -27,7 +26,7 @@ namespace UrlShortenerAPI.Services
         }
 
         /// <inheritdoc />
-public async Task<ShortUrlResponseDto> CreateShortUrlAsync(CreateShortUrlDto dto)
+    public async Task<ShortUrlResponseDto> CreateShortUrlAsync(CreateShortUrlDto dto)
 {
     try
     {
