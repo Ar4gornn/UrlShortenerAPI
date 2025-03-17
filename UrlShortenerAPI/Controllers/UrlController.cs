@@ -1,78 +1,71 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using UrlShortenerAPI.Data;
-using UrlShortenerAPI.Models;
+using UrlShortenerAPI.Dtos;
+using UrlShortenerAPI.Services;
 
 namespace UrlShortenerAPI.Controllers
-
 {
+    /// <summary>
+    /// Controller for handling URL shortener endpoints.
+    /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
-    public class UrlController : ControllerBase
+    [Route("api/urls")]  // Ensure it matches what the frontend calls
+    public class UrlsController : ControllerBase
     {
-        private readonly UrlShortenerContext _context;
+        private readonly IUrlShortenerService _urlShortenerService;
 
-        public UrlController(UrlShortenerContext context)
+        /// <summary>
+        /// Constructs the UrlController with the required service.
+        /// </summary>
+        public UrlsController(IUrlShortenerService urlShortenerService)
         {
-            _context = context;
+            _urlShortenerService = urlShortenerService;
         }
 
-        // POST: api/Url
-        // Expects a JSON body with the original URL as a string
+        /// <summary>
+        /// Creates a new short URL token for the specified original URL.
+        /// </summary>
+        /// <param name="dto">The DTO containing the original URL.</param>
+        /// <returns>A 200 response with a ShortUrlResponseDto, or 400/500 on error.</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateShortUrl([FromBody] string originalUrl)
+        public async Task<IActionResult> CreateShortUrl([FromBody] CreateShortUrlDto dto)
         {
-            if (!Uri.IsWellFormedUriString(originalUrl, UriKind.Absolute))
+            try
             {
-                return BadRequest("Invalid URL");
+                // Validate input
+                if (dto == null || string.IsNullOrWhiteSpace(dto.OriginalUrl))
+                {
+                    return BadRequest(new { error = "Original URL cannot be empty." });
+                }
+
+                ShortUrlResponseDto result = await _urlShortenerService.CreateShortUrlAsync(dto);
+                return Ok(result);
             }
-
-            // Generate a short token
-            var shortToken = GenerateShortToken();
-
-            // Create and save entity
-            var entity = new UrlEntity
+            catch (ArgumentException argEx)
             {
-                ShortUrl = shortToken,
-                OriginalUrl = originalUrl
-            };
-            _context.Urls.Add(entity);
-            await _context.SaveChangesAsync();
-
-            // Return the short URL token (or full path if you want)
-            return Ok(new { ShortUrl = shortToken });
+                return BadRequest(new { error = argEx.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An error occurred while processing your request.", details = ex.Message });
+            }
         }
 
-        // GET: api/Url/{shortUrl}
-        // Redirect user to the original URL
+        /// <summary>
+        /// Redirects the user to the original URL for the given short token, if it exists and is not expired.
+        /// </summary>
+        /// <param name="shortUrl">The short token to look up.</param>
+        /// <returns>A redirect (302) to the original URL, or 404 if not found/expired.</returns>
         [HttpGet("{shortUrl}")]
         public async Task<IActionResult> RedirectToOriginal(string shortUrl)
         {
-            var entity = await _context.Urls
-                .SingleOrDefaultAsync(u => u.ShortUrl == shortUrl);
+            var entity = await _urlShortenerService.GetByShortUrlTokenAsync(shortUrl);
 
             if (entity == null)
             {
-                return NotFound("URL not found");
+                return NotFound(new { error = "URL not found or expired." });
             }
 
-            // Redirect user to the original URL
             return Redirect(entity.OriginalUrl);
-        }
-
-        private string GenerateShortToken()
-        {
-            // Simple random generator for a 6-character token
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var random = new char[6];
-            var rng = new Random();
-
-            for (int i = 0; i < random.Length; i++)
-            {
-                random[i] = chars[rng.Next(chars.Length)];
-            }
-
-            return new string(random);
         }
     }
 }
