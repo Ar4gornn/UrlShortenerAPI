@@ -26,8 +26,10 @@ namespace UrlShortenerAPI.Services
         }
 
         /// <inheritdoc />
-    public async Task<ShortUrlResponseDto> CreateShortUrlAsync(CreateShortUrlDto dto)
-{
+    
+        public async Task<ShortUrlResponseDto> CreateShortUrlAsync(CreateShortUrlDto dto)
+    
+        {
     try
     {
         if (!Uri.IsWellFormedUriString(dto.OriginalUrl, UriKind.Absolute))
